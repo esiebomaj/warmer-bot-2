@@ -1,0 +1,27 @@
+{
+  "name": "Warmer Bot JS",
+  "description": "Warmer Bot JS",
+  "version": "0.1",
+  "manifest_version": 3,
+  "permissions": [
+    "storage",
+    "tabs",
+    "scripting"
+  ],
+  "web_accessible_resources": [
+    {
+      "resources": ["frame.html", "logo.png", "tick.png", "cross.png"],
+      "matches": ["*://*/*"]
+    }
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "host_permissions": [
+    "https://www.linkedin.com/*"
+  ],
+  "action": {
+    "default_popup": "popup.html"
+
+  }
+}
