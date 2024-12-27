@@ -1,8 +1,9 @@
 let tabId;
 
-const injectContentScript = () => (
-    // console.log("Injecting content script")
+const injectContentScript = () => {
+    console.log("Injecting content script")
 
+    return (
     chrome.tabs.query({
         active: true,
         lastFocusedWindow: true
@@ -17,5 +18,7 @@ const injectContentScript = () => (
             });
         }
     })
-);
+);}
 
+
+   document.getElementById('scrapeProfile').addEventListener('click', injectContentScript);
