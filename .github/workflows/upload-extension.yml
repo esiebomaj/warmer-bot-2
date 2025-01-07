@@ -49,11 +49,11 @@ jobs:
       # Step 6: Upload to Google Cloud Storage
       - name: Upload to Google Cloud Storage
         run: |
-          gsutil cp extension.zip gs://warmer-extension/
+          gsutil cp build/extension.zip gs://warmer-extension-latest/
           echo ${{ github.run_number }} > build-num
-          gsutil cp build-num gs://warmer-extension/
+          gsutil cp  build/build-num gs://warmer-extension-latest/
           git rev-list --format=%B -n 1 HEAD > build-commit
-          gsutil cp build-commit gs://warmer-extension/
+          gsutil cp  build/build-commit gs://warmer-extension-latest/
 
       # Step 7: Confirm successful upload
       - name: Confirm Upload Success
