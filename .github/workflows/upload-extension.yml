@@ -51,7 +51,7 @@ jobs:
         uses: google-github-actions/upload-cloud-storage@v1
         with:
           path: build/extension.zip
-          destination: chrome-extension/
+          destination: warmer-extension/
           gzip: true
 
       # Step 7: Confirm successful upload
