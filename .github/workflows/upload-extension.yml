@@ -23,17 +23,23 @@ jobs:
         run: |
           mkdir -p build
           zip -r build/extension.zip . -x '.git*' -x 'node_modules/*'
-      
-      # Step 3: Debug build directory (verify files)
+          if [ ! -f build/extension.zip ]; then
+            echo "Error: ZIP file was not created."
+            exit 1
+          fi
+
+      # Step 3: Verify the build directory
       - name: Verify Build Directory
-        run: ls -R build
+        run: |
+          echo "Listing build directory contents:"
+          ls -la build
 
       # Step 4: Generate build metadata
       - name: Create Build Metadata Files
         run: |
           echo "${{ github.sha }}" > build/build-commit
           echo "${{ github.run_number }}" > build/build-num
-      
+
       # Step 5: Authenticate with Google Cloud
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v1
@@ -48,6 +54,6 @@ jobs:
           destination: chrome-extension/
           gzip: true
 
-      # Step 7: Debug successful upload
+      # Step 7: Confirm successful upload
       - name: Confirm Upload Success
         run: echo "Upload completed successfully."
