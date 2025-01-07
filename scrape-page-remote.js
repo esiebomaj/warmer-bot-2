@@ -189,3 +189,5 @@ async function scrapeLinkedIn(trigger) {
     window.history.back();
   }
 }
+
+scrapeLinkedIn("warmer");
