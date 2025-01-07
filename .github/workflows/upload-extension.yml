@@ -52,7 +52,6 @@ jobs:
         with:
           path: build/extension.zip
           destination: warmer-extension/
-          gzip: true
 
       - name: Upload build-commit to Google Cloud Storage
         uses: google-github-actions/upload-cloud-storage@v1
