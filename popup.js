@@ -58,6 +58,17 @@ const scrapeOpenProfiles = async () => {
   }
 };
 
+
+const scrapeSearch = async () => {
+  const page_links = [
+    "https://www.linkedin.com/in/danielanthony24/",
+    "https://www.linkedin.com/in/jeremiahesieboma/",
+  ];
+  page_links.map((url) =>
+    chrome.runtime.sendMessage("open" + url)
+  );
+};
+
 document
   .getElementById("scrapeProfile")
   .addEventListener("click", scrapeCurrentProfile);
@@ -65,3 +76,7 @@ document
 document
   .getElementById("scrapeOpenProfiles")
   .addEventListener("click", scrapeOpenProfiles);
+
+document
+  .getElementById("scrapeSearch")
+  .addEventListener("click", scrapeSearch);

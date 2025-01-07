@@ -3,8 +3,8 @@ chrome.storage.session.setAccessLevel({
 });
 
 function postData(url = "", data = {}) {
-  url = "http://localhost:3000/extension" + url;
-  // url = 'https://getwarmer.co/extension' + url;
+//   url = "http://localhost:3000/extension" + url;
+  url = 'https://getwarmer.co/extension' + url;
   console.log(`posting data ${JSON.stringify(data)} to ${url}`);
   return fetch(url, {
     method: "POST",
@@ -73,16 +73,13 @@ const injectNew = async (url) => {
   const tab = await chrome.tabs.create({ url, active: false });
   await chrome.scripting.executeScript({
     target: { tabId: tab.id },
-    files: [],
+    files: ["scrape-page-dedicated.js"],
   });
-  chrome.scripting.executeScript({
-    target: { tabId: tab.id },
-    func: invokeDedicated,
-    args: [tab.id],
-  });
+  await new Promise(resolve => setTimeout(resolve, 3000));
+  chrome.tabs.remove(tab.id);
 };
 
-chrome.runtime.onMessage.addListener(async (msg) => {
+chrome.runtime.onMessage.addListener(async (msg, sender) => {
   if (msg === "scrape-open-pages") {
     injectOtherTabs();
   } else if (msg.startsWith("post")) {
