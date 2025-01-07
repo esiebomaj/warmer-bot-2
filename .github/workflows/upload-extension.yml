@@ -56,11 +56,11 @@ jobs:
 
       - name: Upload build-commit to Google Cloud Storage
         run: |
-           gsutil -h "Content-Type: application/octet-stream" cp build/build-commit gs://warmer-extension/
+           gsutil -h "Content-Type: application/octet-stream" cp build/build-commit warmer-extension/
           
       - name: Upload build-num to Google Cloud Storage
         run: |
-           gsutil -h "Content-Type: application/octet-stream" cp build/build-num gs://warmer-extension/
+           gsutil -h "Content-Type: application/octet-stream" cp build/build-num warmer-extension/
 
       # Step 7: Confirm successful upload
       - name: Confirm Upload Success
