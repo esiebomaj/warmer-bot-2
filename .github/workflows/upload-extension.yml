@@ -48,11 +48,31 @@ jobs:
 
       # Step 6: Upload to Google Cloud Storage
       - name: Upload to Google Cloud Storage
-        run: |
-          gsutil cp build/extension.zip gs://warmer-extension/warmer-extension/ && \
-          gsutil -h "Content-Type: application/octet-stream" cp build/build-commit gs://warmer-extension/warmer-extension/ && \
-          gsutil -h "Content-Type: application/octet-stream" cp build/build-num gs://warmer-extension/warmer-extension/
+        uses: google-github-actions/upload-cloud-storage@v1
+        with:
+          path: build/extension.zip
+          destination: warmer-extension/
+          gzip: true
 
+      - name: Upload build-commit to Google Cloud Storage
+        uses: google-github-actions/upload-cloud-storage@v1
+        with:
+          path: build/build-commit
+          destination: warmer-extension
+          metadata: |
+            {
+              "contentType": "application/octet-stream"
+            }
+          
+      - name: Upload build-num to Google Cloud Storage
+        uses: google-github-actions/upload-cloud-storage@v1
+        with:
+          path: build/build-num
+          destination: warmer-extension
+          metadata: |
+            {
+              "contentType": "application/octet-stream"
+            }
 
       # Step 7: Confirm successful upload
       - name: Confirm Upload Success
