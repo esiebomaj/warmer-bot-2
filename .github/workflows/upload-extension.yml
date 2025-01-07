@@ -37,7 +37,7 @@ jobs:
       # Step 4: Generate build metadata
       - name: Create Build Metadata Files
         run: |
-          git rev-list --format=%B -n 1 HEAD > build-commit
+          git rev-list --format=%B -n 1 HEAD > build/build-commit
           echo "build:1.0.${{ github.run_number }}" > build/build-num
 
       # Step 5: Authenticate with Google Cloud
