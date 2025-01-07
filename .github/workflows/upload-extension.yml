@@ -59,14 +59,12 @@ jobs:
         with:
           path: build/build-commit
           destination: warmer-extension/build-commit
-          gzip: true
       
       - name: Upload build-num to Google Cloud Storage
         uses: google-github-actions/upload-cloud-storage@v1
         with:
           path: build/build-num
           destination: warmer-extension/build-num
-          gzip: true
 
       # Step 7: Confirm successful upload
       - name: Confirm Upload Success
