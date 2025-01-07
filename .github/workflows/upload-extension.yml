@@ -49,9 +49,9 @@ jobs:
       # Step 6: Upload to Google Cloud Storage
       - name: Upload to Google Cloud Storage
         run: |
-          gsutil cp build/extension.zip gs://warmer-extension/ && \
-          gsutil -h "Content-Type: application/octet-stream" cp build/build-commit gs://warmer-extension/ && \
-          gsutil -h "Content-Type: application/octet-stream" cp build/build-num gs://warmer-extension/
+          gsutil cp build/extension.zip gs://warmer-extension/warmer-extension/ && \
+          gsutil -h "Content-Type: application/octet-stream" cp build/build-commit gs://warmer-extension/warmer-extension/ && \
+          gsutil -h "Content-Type: application/octet-stream" cp build/build-num gs://warmer-extension/warmer-extension/
 
 
       # Step 7: Confirm successful upload
