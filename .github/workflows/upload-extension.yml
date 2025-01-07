@@ -37,7 +37,7 @@ jobs:
       - name: Upload to Google Cloud Storage
         uses: google-github-actions/upload-cloud-storage@v1
         with:
-          bucket: ${{ env.GCS_BUCKET_NAME }}
+          bucket: ${{ secrets.GCS_BUCKET_NAME }}
           source: build/*
           destination: chrome-extension/
 
