@@ -37,7 +37,7 @@ jobs:
       # Step 4: Generate build metadata
       - name: Create Build Metadata Files
         run: |
-          git rev-list --format=%B -n 1 HEAD > build/build-commit
+          echo "commit:${{ github.sha }}" > build/build-commit
           echo "build:1.0.${{ github.run_number }}" > build/build-num
 
       # Step 5: Authenticate with Google Cloud
@@ -48,19 +48,11 @@ jobs:
 
       # Step 6: Upload to Google Cloud Storage
       - name: Upload to Google Cloud Storage
-        uses: google-github-actions/upload-cloud-storage@v1
-        with:
-          path: build/extension.zip
-          destination: warmer-extension/
-          gzip: true
+        run: |
+          gsutil cp build/extension.zip gs://warmer-extension/ && \
+          gsutil -h "Content-Type: application/octet-stream" cp build/build-commit gs://warmer-extension/ && \
+          gsutil -h "Content-Type: application/octet-stream" cp build/build-num gs://warmer-extension/
 
-      - name: Upload build-commit to Google Cloud Storage
-        run: |
-           gsutil -h "Content-Type: application/octet-stream" cp build/build-commit warmer-extension/
-          
-      - name: Upload build-num to Google Cloud Storage
-        run: |
-           gsutil -h "Content-Type: application/octet-stream" cp build/build-num warmer-extension/
 
       # Step 7: Confirm successful upload
       - name: Confirm Upload Success
