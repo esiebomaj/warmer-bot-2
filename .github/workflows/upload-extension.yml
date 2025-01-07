@@ -4,6 +4,9 @@ on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
 
 jobs:
   build-and-upload:
@@ -20,24 +23,56 @@ jobs:
         run: |
           mkdir -p build
           zip -r build/extension.zip . -x '.git*' -x 'node_modules/*'
+          if [ ! -f build/extension.zip ]; then
+            echo "Error: ZIP file was not created."
+            exit 1
+          fi
 
-      # Step 3: Generate build metadata
+      # Step 3: Verify the build directory
+      - name: Verify Build Directory
+        run: |
+          echo "Listing build directory contents:"
+          ls -la build
+
+      # Step 4: Generate build metadata
       - name: Create Build Metadata Files
         run: |
-          echo "${{ github.sha }}" > build/build-commit
-          echo "${{ github.run_number }}" > build/build-num
+          echo "commit:${{ github.sha }}" > build/build-commit
+          echo "build:1.0.${{ github.run_number }}" > build/build-num
 
-      # Step 4: Authenticate with Google Cloud
+      # Step 5: Authenticate with Google Cloud
       - name: Authenticate with Google Cloud
         uses: google-github-actions/auth@v1
         with:
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      # Step 5: Upload to Google Cloud Storage
+      # Step 6: Upload to Google Cloud Storage
       - name: Upload to Google Cloud Storage
         uses: google-github-actions/upload-cloud-storage@v1
         with:
-          bucket: ${{ env.GCS_BUCKET_NAME }}
-          source: build/*
-          destination: chrome-extension/
+          path: build/extension.zip
+          destination: warmer-extension/
 
+      - name: Upload build-commit to Google Cloud Storage
+        uses: google-github-actions/upload-cloud-storage@v1
+        with:
+          path: build/build-commit
+          destination: warmer-extension
+          metadata: |
+            {
+              "contentType": "application/octet-stream"
+            }
+          
+      - name: Upload build-num to Google Cloud Storage
+        uses: google-github-actions/upload-cloud-storage@v1
+        with:
+          path: build/build-num
+          destination: warmer-extension
+          metadata: |
+            {
+              "contentType": "application/octet-stream"
+            }
+
+      # Step 7: Confirm successful upload
+      - name: Confirm Upload Success
+        run: echo "Upload completed successfully."
