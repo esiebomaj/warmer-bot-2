@@ -3,8 +3,8 @@ chrome.storage.session.setAccessLevel({
 });
 
 function postData(url = "", data = {}) {
-//   url = "http://localhost:3000/extension" + url;
-  url = 'https://getwarmer.co/extension' + url;
+  //   url = "http://localhost:3000/extension" + url;
+  url = "https://getwarmer.co/extension" + url;
   console.log(`posting data ${JSON.stringify(data)} to ${url}`);
   return fetch(url, {
     method: "POST",
@@ -75,7 +75,7 @@ const injectNew = async (url) => {
     target: { tabId: tab.id },
     files: ["scrape-page-dedicated.js"],
   });
-  await new Promise(resolve => setTimeout(resolve, 3000));
+  await new Promise((resolve) => setTimeout(resolve, 3000));
   chrome.tabs.remove(tab.id);
 };
 

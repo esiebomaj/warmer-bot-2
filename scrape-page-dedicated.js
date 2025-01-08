@@ -70,6 +70,12 @@ function extractContactInfo(doc) {
         contacts["Address"] = section.querySelector("a")?.textContent.trim();
         break;
 
+      case "Websites":
+        contacts["Website"] = section.querySelector("a")?.href;
+        contacts["Websites"] = Array.from(section.querySelectorAll("a")).map(
+          (a) => a.href
+        );
+
       case "Birthday":
         contacts["Birthday"] = section
           .querySelector(".t-14.t-black.t-normal")
@@ -182,10 +188,7 @@ async function scrapeLinkedIn(trigger) {
     console.log(res);
 
     window.history.back();
-
   }
 }
 
-
 scrapeLinkedIn(1);
-
