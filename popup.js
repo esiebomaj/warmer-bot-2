@@ -59,7 +59,6 @@ const scrapeOpenProfiles = async () => {
 };
 
 const scrapeAllProfile = async () => {
-  console.log("Injecting content script");
   return chrome.tabs.query(
     {
       active: true,

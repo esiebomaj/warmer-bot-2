@@ -1,5 +1,4 @@
 async function getAllProfileLinks() {
-  console.log("mr");
   const ulElement = document.evaluate(
     `//*[@class="search-results-container"]/div/div/ul`,
     document,
@@ -8,13 +7,10 @@ async function getAllProfileLinks() {
     null
   ).singleNodeValue;
 
-  console.log(ulElement);
-
   if (!ulElement) {
     console.error("Target <ul> element not found.");
     return [];
   }
-  console.log(ulElement);
 
   // Extract profile links
   return Array.from(ulElement.querySelectorAll("a[data-test-app-aware-link]"))
