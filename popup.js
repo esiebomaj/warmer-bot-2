@@ -58,14 +58,22 @@ const scrapeOpenProfiles = async () => {
   }
 };
 
-
-const scrapeSearch = async () => {
-  const page_links = [
-    "https://www.linkedin.com/in/danielanthony24/",
-    "https://www.linkedin.com/in/jeremiahesieboma/",
-  ];
-  page_links.map((url) =>
-    chrome.runtime.sendMessage("open" + url)
+const scrapeAllProfile = async () => {
+  console.log("Injecting content script");
+  return chrome.tabs.query(
+    {
+      active: true,
+      lastFocusedWindow: true,
+    },
+    function (tabs) {
+      if (tabs.length) {
+        tabId = tabs[0].id;
+        chrome.scripting.executeScript({
+          target: { tabId },
+          files: ["initial-multi-scrap.js"],
+        });
+      }
+    }
   );
 };
 
@@ -79,4 +87,4 @@ document
 
 document
   .getElementById("scrapeSearch")
-  .addEventListener("click", scrapeSearch);
+  .addEventListener("click", scrapeAllProfile);
