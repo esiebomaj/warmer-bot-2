@@ -58,7 +58,7 @@ const scrapeOpenProfiles = async () => {
   }
 };
 
-const scrapeAllProfile = async () => {
+const scrapeSearchPage = async () => {
   return chrome.tabs.query(
     {
       active: true,
@@ -69,7 +69,7 @@ const scrapeAllProfile = async () => {
         tabId = tabs[0].id;
         chrome.scripting.executeScript({
           target: { tabId },
-          files: ["initial-multi-scrap.js"],
+          files: ["scrape-search-page.js"],
         });
       }
     }
@@ -86,4 +86,4 @@ document
 
 document
   .getElementById("scrapeSearch")
-  .addEventListener("click", scrapeAllProfile);
+  .addEventListener("click", scrapeSearchPage);
