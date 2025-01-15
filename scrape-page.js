@@ -318,9 +318,9 @@ async function scrapeLinkedIn(trigger) {
       education: ariaRegex(educationRegex),
       title: document.title,
       mutuals: spanSubstring("mutual connection"),
-      mutualsObj: mutuals,
-      warmestLinks: warmestProfiles.map((p) => p.profileLink),
-      warmestProfiles,
+      "mutuals-obj": mutuals,
+      "warmest-links": warmestProfiles.map((p) => p.profileLink),
+      "warmest-profiles": warmestProfiles,
     };
 
     console.log(data);

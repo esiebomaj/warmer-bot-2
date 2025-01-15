@@ -94,6 +94,144 @@ function extractContactInfo(doc) {
   return contacts;
 }
 
+async function sendConnectionRequest() {
+  try {
+    // First click the "More" button to open the dropdown
+    const moreButton = document.querySelector(
+      'button[aria-label="More actions"]'
+    );
+    if (!moreButton) {
+      console.log("More button not found");
+      return;
+    }
+    moreButton.click();
+
+    // Wait for dropdown and look for connect button
+    await new Promise((resolve) => setTimeout(resolve, 500));
+
+    // Look for the Connect button in the dropdown
+    const connectButton1 = document.querySelector(
+      'button[aria-label^="Invite"][aria-label$="to connect"]'
+    );
+    const connectButton2 = document.querySelector(
+      'div[aria-label^="Invite"][aria-label$="to connect"][role="button"]'
+    );
+
+    const connectButton = connectButton1 || connectButton2;
+
+    if (connectButton) {
+      // Click connect buttonwhy does it
+      connectButton.click();
+
+      // Wait for the connection modal to appear
+      await new Promise((resolve) => setTimeout(resolve, 2000));
+
+      // Look for and click the "Send without a note" button
+      const sendWithoutNoteButton = document.querySelector(
+        'button[aria-label="Send without a note"]'
+      );
+      if (sendWithoutNoteButton) {
+        sendWithoutNoteButton.click();
+
+        // Wait for the confirmation modal to appear
+        await new Promise((resolve) => setTimeout(resolve, 500));
+      } else {
+        console.log("Send without note button not found");
+      }
+      // Close the confirmation modal by clicking the dismiss button
+      const modal = document.querySelector(
+        'div[role="dialog"][data-test-modal]'
+      );
+      if (modal) {
+        const dismissButton = modal.querySelector(
+          'button[aria-label="Dismiss"]'
+        );
+        if (dismissButton) {
+          dismissButton.click();
+          console.log("Dismissed the confirmation modal.");
+        } else {
+          console.log("Dismiss button not found in the modal.");
+        }
+      } else {
+        console.log("Modal not found.");
+      }
+    } else {
+      // Close dropdown if no connect button found
+      moreButton.click();
+      console.log(
+        "Connection request already sent or connect button not found"
+      );
+    }
+  } catch (error) {
+    console.error("Error sending connection request:", error);
+  }
+}
+
+function getMutuals() {
+  const mutualElement = document.querySelector(
+    'a[href*="facetNetwork"][href*="facetConnectionOf"]'
+  );
+
+  if (!mutualElement) {
+    return null;
+  }
+
+  const mutualText = mutualElement
+    .querySelector(".t-normal.t-black--light.t-14")
+    ?.textContent.trim();
+  const mutualLink = mutualElement.href;
+  const match = mutualText?.match(/(\d+) other mutual connection/);
+  const numMutuals = match ? parseInt(match[1]) + 2 : 0;
+
+  return {
+    text: mutualText,
+    count: numMutuals,
+    link: mutualLink,
+  };
+}
+
+function getProfilesWithDegree() {
+  // First find the section with "More profiles for you" heading
+  const moreProfilesSection = Array.from(document.querySelectorAll("h2"))
+    .find((h2) => h2.textContent.includes("More profiles for you"))
+    ?.closest("section");
+
+  if (!moreProfilesSection) {
+    return [];
+  }
+
+  // Now look for profile cards within this specific section
+  const profileCards = moreProfilesSection.querySelectorAll(
+    ".artdeco-list__item"
+  );
+
+  const profiles = [];
+
+  profileCards.forEach((card) => {
+    // Get the profile link
+    const profileLink = card
+      .querySelector('a[href*="/in/"]')
+      ?.href?.split("?")[0];
+
+    const name = card.querySelector(".t-bold")?.textContent?.trim();
+
+    const degreeMatch = card
+      .querySelector(".t-black--light")
+      ?.textContent?.match(/(1st|2nd|3rd)/);
+    const degree = degreeMatch ? degreeMatch[1].charAt(0) : null;
+
+    if (profileLink) {
+      profiles.push({
+        name,
+        profileLink,
+        degree: parseInt(degree),
+      });
+    }
+  });
+
+  return profiles.sort((a, b) => a.degree - b.degree);
+}
+
 async function scrapeLinkedIn(trigger) {
   console.log("SCRAPING LINKEDIN", trigger);
   const contactsLoadedClass = ".pv-profile-section__section-info.section-info";
@@ -165,6 +303,10 @@ async function scrapeLinkedIn(trigger) {
     // Usage example:
     const contacts = extractContactInfo(querySelector(contactsLoadedClass));
     console.log(contacts);
+    const mutuals = getMutuals();
+    console.log(mutuals);
+    const warmestProfiles = getProfilesWithDegree().slice(0, 5);
+    console.log(warmestProfiles);
 
     const sendToBackend = trigger === "local" || typeof trigger === "number";
 
@@ -178,6 +320,9 @@ async function scrapeLinkedIn(trigger) {
       education: ariaRegex(educationRegex),
       mutuals: spanSubstring("mutual connection"),
       title: document.title,
+      "mutuals-obj": mutuals,
+      "warmest-links": warmestProfiles.map((p) => p.profileLink),
+      "warmest-profiles": warmestProfiles,
     };
 
     console.log(data);
